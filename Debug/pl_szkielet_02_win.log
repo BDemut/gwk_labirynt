@@ -1,0 +1,13 @@
+﻿  cube.cpp
+  lodepng.cpp
+  main_file.cpp
+C:\Users\Kek\Desktop\gwk_labirynt\main_file.cpp(150,53): warning C4305: "argument": obcięcie z "double" do "GLfloat"
+C:\Users\Kek\Desktop\gwk_labirynt\main_file.cpp(195,35): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\Kek\Desktop\gwk_labirynt\main_file.cpp(196,35): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+  model.cpp
+  shaderprogram.cpp
+  sphere.cpp
+  teapot.cpp
+  torus.cpp
+  Generowanie kodu...
+  pl_szkielet_02_win.vcxproj -> C:\Users\Kek\Desktop\gwk_labirynt\Debug\pl_szkielet_02_win.exe
