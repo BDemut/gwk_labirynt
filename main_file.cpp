@@ -30,7 +30,9 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "allmodels.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
+#include "grid.h"
 
+GridTile testTile = GridTile();
 
 float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
@@ -107,51 +109,7 @@ void drawScene(GLFWwindow* window,float kat_x,float kat_y) {
 	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
 	
-	glm::mat4 M = glm::mat4(1.0f);
-	//M = glm::rotate(M, angle, glm::vec3(0, 1, 0));
-
-	glm::mat4 M1 = M; 
-	M1 = glm::translate(M1, glm::vec3(0, 0.05, 0));
-	M1 = glm::scale(M1, glm::vec3(1.0, 0.05, 1.0));
-	glUniform4f(spLambert->u("color"), 0, 1, 0, 1); //Ustaw kolor rysowania obiektu
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1)); //Załaduj do programu cieniującego macierz modelu
-	Models::cube.drawSolid(); //Narysuj obiekt
-
-	M1 = M;
-	M1 = glm::translate(M1, glm::vec3(0, 1.95, 0));
-	M1 = glm::scale(M1, glm::vec3(1.0, 0.05, 1.0));
-	glUniform4f(spLambert->u("color"), 0, 1, 0, 1); //Ustaw kolor rysowania obiektu
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1)); //Załaduj do programu cieniującego macierz modelu
-	Models::cube.drawSolid(); //Narysuj obiekt
-
-
-	M1 = M;
-	M1 = glm::translate(M1, glm::vec3(0, 1, 0.95));
-	M1 = glm::scale(M1, glm::vec3(1.0, 1.0, 0.05));
-	glUniform4f(spLambert->u("color"), 0, 1, 0, 1); //Ustaw kolor rysowania obiektu
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1)); //Załaduj do programu cieniującego macierz modelu
-	Models::cube.drawSolid(); //Narysuj obiekt
-
-	M1 = M;
-	M1 = glm::translate(M1, glm::vec3(0, 1, -0.95));
-	M1 = glm::scale(M1, glm::vec3(1, 1.0, 0.05));
-	glUniform4f(spLambert->u("color"), 0, 1, 0, 1); //Ustaw kolor rysowania obiektu
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1)); //Załaduj do programu cieniującego macierz modelu
-	Models::cube.drawSolid(); //Narysuj obiekt
-
-	M1 = M;
-	M1 = glm::translate(M1, glm::vec3(0.95, 1, 0));
-	M1 = glm::scale(M1, glm::vec3(0.05, 1.0, 1));
-	glUniform4f(spLambert->u("color"), 0, 1, 0, 1); //Ustaw kolor rysowania obiektu
-	glUniformMatrix4fv(spLambert->u("M"), 1, false,glm::value_ptr(M1)); //Załaduj do programu cieniującego macierz modelu
-	Models::cube.drawSolid(); //Narysuj obiekt
-
-	M1 = M;
-	M1 = glm::translate(M1, glm::vec3(-0.95, 1, 0));
-	M1 = glm::scale(M1, glm::vec3(0.05, 1.0, 1));
-	glUniform4f(spLambert->u("color"), 0, 1, 0, 1); //Ustaw kolor rysowania obiektu
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M1)); //Załaduj do programu cieniującego macierz modelu
-	Models::cube.drawSolid(); //Narysuj obiekt
+	testTile.draw();
 
 	glfwSwapBuffers(window); //Skopiuj bufor tylny do bufora przedniego
 }
