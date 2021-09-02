@@ -6,7 +6,7 @@
  - dodać tekstury dla ścian i podłóg 
  
 # 2. Świat
- - stworzyć pokój (jakiś sześcian idk)
+ - stworzyć pokój (jakiś sześcian idk) (B)
  - korytarze labiryntu
  - mosty, przepaście
  - schody: więcej pięter (może jedno wyżej i jedno niżej)
