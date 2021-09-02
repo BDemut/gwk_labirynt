@@ -28,3 +28,5 @@
 *.exe
 *.out
 *.app
+
+.vs/pl_szkielet_02_win/v16/Browse.VC.opendb
