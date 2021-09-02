@@ -7,6 +7,8 @@
  
 # 2. Świat
  - stworzyć pokój (jakiś sześcian idk) (B)
+   1. Rysowanie pokoju (Z)
+   2. GridTile - logika (B)
  - korytarze labiryntu
  - mosty, przepaście
  - schody: więcej pięter (może jedno wyżej i jedno niżej)
