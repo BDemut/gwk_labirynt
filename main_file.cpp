@@ -38,6 +38,8 @@ float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
 float walk_speed = 0;
 
+float kat_x = 0;
+
 glm::vec3 pos = glm::vec3(0.0, 0.8, 0.0); //TODO: zamienić 0.8 na jakąś wysokość postaci
 
 float aspectRatio = 1;
@@ -61,21 +63,22 @@ void key_callback(
 	int mod
 ) {
 	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_LEFT) speed_y = 1;
-		if (key == GLFW_KEY_RIGHT) speed_y = -1;
-		if (key == GLFW_KEY_PAGE_UP) speed_x = 1;
-		if (key == GLFW_KEY_PAGE_DOWN) speed_x = -1;
-		if (key == GLFW_KEY_UP) walk_speed = 2;
-		if (key == GLFW_KEY_DOWN) walk_speed = -2;
+		if (key == GLFW_KEY_A) speed_y = 1;
+		if (key == GLFW_KEY_D) speed_y = -1;
+		if (key == GLFW_KEY_UP) speed_x = 1;
+		if (key == GLFW_KEY_DOWN) speed_x = -1;
+		if (key == GLFW_KEY_W) walk_speed = 2;
+		if (key == GLFW_KEY_S) walk_speed = -2;
+		if (key == GLFW_KEY_R) kat_x = 0; //Resetuje kąt patrzenia w górę i dół
 		
 	}
 	if (action == GLFW_RELEASE) {
-		if (key == GLFW_KEY_LEFT) speed_y = 0;
-		if (key == GLFW_KEY_RIGHT) speed_y = 0;		
-		if (key == GLFW_KEY_PAGE_UP) speed_x = 0;
-		if (key == GLFW_KEY_PAGE_DOWN) speed_x = 0;
-		if (key == GLFW_KEY_UP) walk_speed = 0;
-		if (key == GLFW_KEY_DOWN) walk_speed = 0;
+		if (key == GLFW_KEY_A) speed_y = 0;
+		if (key == GLFW_KEY_D) speed_y = 0;		
+		if (key == GLFW_KEY_UP) speed_x = 0;
+		if (key == GLFW_KEY_DOWN) speed_x = 0;
+		if (key == GLFW_KEY_W) walk_speed = 0;
+		if (key == GLFW_KEY_S) walk_speed = 0;
 	}
 }
 //Procedura obsługi błędów
@@ -158,12 +161,13 @@ int main(void)
 
 	//Główna pętla
 	float angle = 0; //zadeklaruj zmienną przechowującą aktualny kąt obrotu
-	float kat_x = 0;
+	/*float*/ kat_x = 0;
 	float kat_y = 0;
 	glfwSetTime(0); //Wyzeruj licznik czasu
 	while (!glfwWindowShouldClose(window)) //Tak długo jak okno nie powinno zostać zamknięte
 	{
-		kat_x += speed_x * glfwGetTime();
+		// Ograniczenie żeby patrzeć max 90 st w górę lub w dół
+		kat_x = glm::clamp((float)(kat_x + speed_x * glfwGetTime()), -PI/2, PI/2);
 		kat_y += speed_y * glfwGetTime(); 
 		pos += (float)(walk_speed * glfwGetTime()) * calcDir(0, kat_y);
 		glfwSetTime(0); //Wyzeruj licznik czasu

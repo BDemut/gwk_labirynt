@@ -1,7 +1,3 @@
-﻿  grid.cpp
-  main_file.cpp
-C:\Users\Kek\Desktop\gwk_labirynt\main_file.cpp(155,35): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-C:\Users\Kek\Desktop\gwk_labirynt\main_file.cpp(156,35): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
-  Object.cpp
-  Generowanie kodu...
-  pl_szkielet_02_win.vcxproj -> C:\Users\Kek\Desktop\gwk_labirynt\Debug\pl_szkielet_02_win.exe
+﻿  main_file.cpp
+D:\PP\Grafika komputerowa i wizualizacja\Laboratorium\Projekt\gwk_labirynt\main_file.cpp(171,35): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
+  pl_szkielet_02_win.vcxproj -> D:\PP\Grafika komputerowa i wizualizacja\Laboratorium\Projekt\gwk_labirynt\Debug\pl_szkielet_02_win.exe
