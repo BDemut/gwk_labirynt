@@ -38,7 +38,13 @@ float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
 float walk_speed = 0;
 
+<<<<<<< Updated upstream
 glm::vec3 pos = glm::vec3(0.0, 0.8, 0.0); //TODO: zamienić 0.8 na jakąś wysokość postaci
+=======
+float aspectRatio = 1;
+
+glm::vec3 pos = glm::vec3(0, 2, -11);
+>>>>>>> Stashed changes
 
 glm::vec3 calcDir(float kat_x, float kat_y) {
 	glm::vec4 dir = glm::vec4(0, 0, 1, 0);
@@ -79,12 +85,19 @@ void error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
 
+void windowResizeCallback(GLFWwindow* window, int width, int height) {
+	if (height == 0) return;
+	aspectRatio = (float)width / (float)height;
+	glViewport(0, 0, width, height);
+}
+
 //Procedura inicjująca
 void initOpenGLProgram(GLFWwindow* window) {
     initShaders();
 	//************Tutaj umieszczaj kod, który należy wykonać raz, na początku programu************
 	glClearColor(0, 0, 0, 1); //Ustaw kolor czyszczenia bufora kolorów
 	glEnable(GL_DEPTH_TEST); //Włącz test głębokości na pikselach
+	glfwSetWindowSizeCallback(window, windowResizeCallback);
 	glfwSetKeyCallback(window, key_callback);
 }
 
@@ -102,7 +115,7 @@ void drawScene(GLFWwindow* window,float kat_x,float kat_y) {
 	
 	
 	glm::mat4 V = glm::lookAt(pos, pos+calcDir(kat_x,kat_y), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
-	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.0f, 0.1f, 50.0f); //Wylicz macierz rzutowania
+	glm::mat4 P = glm::perspective(glm::radians(50.0f), aspectRatio, 0.1f, 50.0f); //Wylicz macierz rzutowania
 
 	spLambert->use(); //Aktyeuj program cieniujący
 	
@@ -154,7 +167,7 @@ int main(void)
 	{
 		kat_x += speed_x * glfwGetTime();
 		kat_y += speed_y * glfwGetTime(); 
-		pos += (float)(walk_speed * glfwGetTime()) * calcDir(kat_x, kat_y);
+		pos += (float)(walk_speed * glfwGetTime()) * calcDir(0, kat_y);
 		glfwSetTime(0); //Wyzeruj licznik czasu
 		drawScene(window,kat_x,kat_y); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
