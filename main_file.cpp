@@ -38,13 +38,11 @@ float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
 float walk_speed = 0;
 
-<<<<<<< Updated upstream
 glm::vec3 pos = glm::vec3(0.0, 0.8, 0.0); //TODO: zamienić 0.8 na jakąś wysokość postaci
-=======
+
 float aspectRatio = 1;
 
-glm::vec3 pos = glm::vec3(0, 2, -11);
->>>>>>> Stashed changes
+//glm::vec3 pos = glm::vec3(0, 2, -11);
 
 glm::vec3 calcDir(float kat_x, float kat_y) {
 	glm::vec4 dir = glm::vec4(0, 0, 1, 0);
