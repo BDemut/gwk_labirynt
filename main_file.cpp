@@ -32,7 +32,7 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "shaderprogram.h"
 #include "grid.h"
 
-GridTile testTile = GridTile();
+Grid grid = Grid();
 
 float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
@@ -123,7 +123,7 @@ void drawScene(GLFWwindow* window,float kat_x,float kat_y) {
 	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
 	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
 	
-	testTile.draw();
+	grid.draw();
 
 	glfwSwapBuffers(window); //Skopiuj bufor tylny do bufora przedniego
 }

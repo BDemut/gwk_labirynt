@@ -14,23 +14,37 @@ private:
 	glm::vec3 scale;
 	glm::vec3 translation;
 public:
-	void draw();
-	Object(glm::vec3, glm::vec3);
+	void draw(float,float,float);
+	Object(int, int, int, int);
 	Object();
 };
 
-const glm::vec3 FLOOR_SCALE =				glm::vec3(1.0, 0.05, 1.0);
-const glm::vec3 FLOOR_TRANSLATION =			glm::vec3(0, 0.05, 0);
-const glm::vec3 WALL_BACK_SCALE =			glm::vec3(1.0, 1.0, 0.05);
-const glm::vec3 WALL_BACK_TRANSLATION =		glm::vec3(0, 1, -0.95);
-const glm::vec3 WALL_LEFT_SCALE =			glm::vec3(0.05, 1.0, 1);
-const glm::vec3 WALL_LEFT_TRANSLATION =		glm::vec3(-0.95, 1, 0);
-const glm::vec3 WALL_RIGHT_SCALE =			glm::vec3(0.05, 1.0, 1);
-const glm::vec3 WALL_RIGHT_TRANSLATION =	glm::vec3(0.95, 1, 0);
-const glm::vec3 WALL_FRONT_SCALE =			glm::vec3(1.0, 1.0, 0.05);
-const glm::vec3 WALL_FRONT_TRANSLATION =	glm::vec3(0, 1, 0.95);
-const glm::vec3 CEILING_SCALE =				glm::vec3(1.0, 0.05, 1.0);
-const glm::vec3 CEILING_TRANSLATION =		glm::vec3(0, 1.95, 0);
+const int OBJECT_FLOOR = 0;
+const int OBJECT_WALL_BACK = 1;
+const int OBJECT_WALL_RIGHT = 2;
+const int OBJECT_WALL_FRONT = 3;
+const int OBJECT_WALL_LEFT = 4;
+const int OBJECT_CEILING = 5;
+
+const int OBJECT_MAX = 6;
+
+const float SCALES[OBJECT_MAX][3] = {
+	{1.0, 0.05, 1.0},
+	{1.0, 1.0, 0.05},
+	{0.05, 1.0, 1},
+	{1.0, 1.0, 0.05},
+	{0.05, 1.0, 1},
+	{1.0, 0.05, 1.0}
+};
+
+const float TRANSLATIONS[OBJECT_MAX][3] = {
+	{0, 0.05, 0},
+	{0, 1, -0.95},
+	{0.95, 1, 0},
+	{0, 1, 0.95},
+	{-0.95, 1, 0},
+	{0, 1.95, 0}
+};
 
 #endif OBJECT_H
 
