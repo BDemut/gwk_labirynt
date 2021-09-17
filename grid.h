@@ -19,9 +19,6 @@ public:
 class Grid {
 private:
 	GridTile*** gridTiles;
-	int x_size;
-	int y_size;
-	int z_size;
 public:
 	void draw();
 	Grid();
@@ -35,4 +32,7 @@ const int CONTAINS_WALL_FRONT =	0b001000;
 const int CONTAINS_WALL_LEFT =	0b010000;
 const int CONTAINS_CEILING =	0b100000;
 
+const int X_SIZE = 10;
+const int Y_SIZE = 3;
+const int Z_SIZE = 10;
 #endif
