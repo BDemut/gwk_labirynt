@@ -44,8 +44,9 @@ public:
 };
 
 
-extern ShaderProgram *spConstant;
-extern ShaderProgram *spLambert;
+//extern ShaderProgram *spConstant;
+//extern ShaderProgram *spLambert;
+extern ShaderProgram *sp;
 
 void initShaders();
 void freeShaders();

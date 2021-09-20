@@ -20,16 +20,19 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "shaderprogram.h"
 
 
-ShaderProgram *spLambert;
-ShaderProgram *spConstant;
+//ShaderProgram *spLambert;
+//ShaderProgram *spConstant;
+ShaderProgram *sp;
 
 void initShaders(){
-    spLambert=new ShaderProgram("v_lambert.glsl",NULL,"f_lambert.glsl");
-    spConstant=new ShaderProgram("v_constant.glsl",NULL,"f_constant.glsl");
+    //spLambert=new ShaderProgram("v_lambert.glsl",NULL,"f_lambert.glsl");
+    //spConstant=new ShaderProgram("v_constant.glsl",NULL,"f_constant.glsl");
+	sp = new ShaderProgram("v_shader.glsl",NULL,"f_shader.glsl");
 }
 
 void freeShaders(){
-    delete spLambert;
+    //delete spLambert;
+	delete sp;
 }
 
 
