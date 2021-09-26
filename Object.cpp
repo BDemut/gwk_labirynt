@@ -11,7 +11,7 @@ void Object::draw(float r, float g, float b) {
 	glm::mat4 M = glm::mat4(1.0f);
 	M = glm::translate(M, translation);
 	M = glm::scale(M, scale);
-	glUniform4f(spLambert->u("color"), r, g, b, 1); //Ustaw kolor rysowania obiektu
-	glUniformMatrix4fv(spLambert->u("M"), 1, false, glm::value_ptr(M)); //Za³aduj do programu cieniuj¹cego macierz modelu
+	glUniform4f(sp->u("color"), r, g, b, 1); //Ustaw kolor rysowania obiektu
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M)); //Za³aduj do programu cieniuj¹cego macierz modelu
 	Models::cube.drawSolid(); //Narysuj obiekt
 }

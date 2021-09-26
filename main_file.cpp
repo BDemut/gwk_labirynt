@@ -44,8 +44,6 @@ glm::vec3 pos = glm::vec3(0.0, 0.8, 0.0); //TODO: zamienić 0.8 na jakąś wysok
 
 float aspectRatio = 1;
 
-//glm::vec3 pos = glm::vec3(0, 2, -11);
-
 glm::vec3 calcDir(float kat_x, float kat_y) {
 	glm::vec4 dir = glm::vec4(0, 0, 1, 0);
 	glm::mat4 M = glm::rotate(glm::mat4(1.0f), kat_y, glm::vec3(0, 1, 0));
@@ -63,24 +61,25 @@ void key_callback(
 	int mod
 ) {
 	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_A) speed_y = 1;
-		if (key == GLFW_KEY_D) speed_y = -1;
-		if (key == GLFW_KEY_UP) speed_x = 1;
-		if (key == GLFW_KEY_DOWN) speed_x = -1;
 		if (key == GLFW_KEY_W) walk_speed = 2;
 		if (key == GLFW_KEY_S) walk_speed = -2;
+		if (key == GLFW_KEY_A) speed_y = 1;
+		if (key == GLFW_KEY_D) speed_y = -1;
+		if (key == GLFW_KEY_UP) speed_x = -1;
+		if (key == GLFW_KEY_DOWN) speed_x = 1;
 		if (key == GLFW_KEY_R) kat_x = 0; //Resetuje kąt patrzenia w górę i dół
 		
 	}
 	if (action == GLFW_RELEASE) {
 		if (key == GLFW_KEY_A) speed_y = 0;
-		if (key == GLFW_KEY_D) speed_y = 0;		
-		if (key == GLFW_KEY_UP) speed_x = 0;
-		if (key == GLFW_KEY_DOWN) speed_x = 0;
+		if (key == GLFW_KEY_D) speed_y = 0;
 		if (key == GLFW_KEY_W) walk_speed = 0;
 		if (key == GLFW_KEY_S) walk_speed = 0;
+		if (key == GLFW_KEY_UP) speed_x = 0;
+		if (key == GLFW_KEY_DOWN) speed_x = 0;
 	}
 }
+
 //Procedura obsługi błędów
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
@@ -102,7 +101,6 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetKeyCallback(window, key_callback);
 }
 
-
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
     freeShaders();
@@ -114,20 +112,18 @@ void drawScene(GLFWwindow* window,float kat_x,float kat_y) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Wyczyść bufor koloru i bufor głębokości
 	
-	
 	glm::mat4 V = glm::lookAt(pos, pos+calcDir(kat_x,kat_y), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), aspectRatio, 0.1f, 50.0f); //Wylicz macierz rzutowania
 
-	spLambert->use(); //Aktyeuj program cieniujący
+	sp->use(); //Aktywuj program cieniujący
 	
-	glUniformMatrix4fv(spLambert->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
-	glUniformMatrix4fv(spLambert->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
-	
+	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
+	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
+
 	grid.draw();
 
 	glfwSwapBuffers(window); //Skopiuj bufor tylny do bufora przedniego
 }
-
 
 int main(void)
 {
