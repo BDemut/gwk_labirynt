@@ -57,20 +57,46 @@ int generatePath(int*** layout, int start_x, int start_y, int start_z, int recur
 				int ramp_z = curr_z;
 				if (step(layout, curr_x, curr_y + 1, curr_z, direction)) {
 					curr_y++;
-					//create ramp (direcrtion)
+					switch (direction) {
+					case 0:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_BF;
+						break;
+					case 1:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_LR;
+						break;
+					case 2:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_FB;
+						break;
+					case 3:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_RL;
+						break;
+					}
 					layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] & ~CONTAINS_CEILING;
 					layout[ramp_x][ramp_y + 1][ramp_z] = layout[ramp_x][ramp_y + 1][ramp_z] & ~CONTAINS_FLOOR;
 				}
 			}
 			if (rollVertical < 10 && curr_y > 0) {
 				int ramp_x = curr_x;
-				int ramp_y = curr_y;
+				int ramp_y = curr_y - 1;
 				int ramp_z = curr_z;
 				if (step(layout, curr_x, curr_y - 1, curr_z, direction)) {
 					curr_y--;
-					//create ramp (direcrtion)
-					layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] & ~CONTAINS_FLOOR;
-					layout[ramp_x][ramp_y - 1][ramp_z] = layout[ramp_x][ramp_y - 1][ramp_z] & ~CONTAINS_CEILING;
+					switch (direction) {
+					case 0:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_FB;
+						break;
+					case 1:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_RL;
+						break;
+					case 2:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_BF;
+						break;
+					case 3:
+						layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] | CONTAINS_RAMP_LR;
+						break;
+					}
+					layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] & ~CONTAINS_CEILING;
+					layout[ramp_x][ramp_y + 1][ramp_z] = layout[ramp_x][ramp_y + 1][ramp_z] & ~CONTAINS_FLOOR;
 				}
 			}
 		}
@@ -101,16 +127,17 @@ GridTile::GridTile() {
 	objects.push_back(Object());
 }
 
-GridTile::GridTile(int layout, int x, int y, int z) {
+GridTile::GridTile(int l, int x, int y, int z) {
 	r = (float)rand() / RAND_MAX;
 	g = (float)rand() / RAND_MAX;
 	b = (float)rand() / RAND_MAX;
 	objects = std::vector<Object>();
+	layout = l;
 	for (int i = 0; i < OBJECT_MAX; i++) {
-		if (layout & 1) {
+		if (l & 1) {
 			objects.push_back(Object(i, x, y, z));
 		}
-		layout >>= 1;
+		l >>= 1;
 	}
 }
 
