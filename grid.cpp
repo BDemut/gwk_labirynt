@@ -1,105 +1,94 @@
 #include "grid.h"
 
-int generatePath(int*** layout, int start_x, int start_z, int recursionDepth) {
+bool step(int*** layout, int& curr_x, int curr_y, int& curr_z, int direction) {
+	switch (direction) {
+	case 0:
+		if (curr_z > 0 && layout[curr_x][curr_y][curr_z - 1] == CONTAINS_ALL) {
+			layout[curr_x][curr_y][curr_z] = layout[curr_x][curr_y][curr_z] & ~CONTAINS_WALL_BACK;
+			layout[curr_x][curr_y][curr_z - 1] = layout[curr_x][curr_y][curr_z - 1] & ~CONTAINS_WALL_FRONT;
+			curr_z--;
+			return true;
+		}
+		break;
+	case 1:
+		if (curr_x > 0 && layout[curr_x - 1][curr_y][curr_z] == CONTAINS_ALL) {
+			layout[curr_x][curr_y][curr_z] = layout[curr_x][curr_y][curr_z] & ~CONTAINS_WALL_LEFT;
+			layout[curr_x - 1][curr_y][curr_z] = layout[curr_x - 1][curr_y][curr_z] & ~CONTAINS_WALL_RIGHT;
+			curr_x--;
+			return true;
+		}
+		break;
+	case 2:
+		if (curr_z < Z_SIZE - 1 && layout[curr_x][curr_y][curr_z + 1] == CONTAINS_ALL) {
+			layout[curr_x][curr_y][curr_z] = layout[curr_x][curr_y][curr_z] & ~CONTAINS_WALL_FRONT;
+			layout[curr_x][curr_y][curr_z + 1] = layout[curr_x][curr_y][curr_z + 1] & ~CONTAINS_WALL_BACK;
+			curr_z++;
+			return true;
+		}
+		break;
+	case 3:
+		if (curr_x < X_SIZE - 1 && layout[curr_x + 1][curr_y][curr_z] == CONTAINS_ALL) {
+			layout[curr_x][curr_y][curr_z] = layout[curr_x][curr_y][curr_z] & ~CONTAINS_WALL_RIGHT;
+			layout[curr_x + 1][curr_y][curr_z] = layout[curr_x + 1][curr_y][curr_z] & ~CONTAINS_WALL_LEFT;
+			curr_x++;
+			return true;
+		}
+		break;
+	}
+	return false;
+}
+
+int generatePath(int*** layout, int start_x, int start_y, int start_z, int recursionDepth) {
 	int totalLength = 0;
 	int curr_x = start_x;
+	int curr_y = start_y;
 	int curr_z = start_z;
 	int failedMovesInARow = 0;
 	while (true) {
 		int direction = rand() % 4;
-		switch (direction) {
-		case 0:
-			if (curr_z > 0 && layout[curr_x][0][curr_z - 1] == CONTAINS_ALL) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_BACK;
-				layout[curr_x][0][curr_z - 1] = layout[curr_x][0][curr_z - 1] & ~CONTAINS_WALL_FRONT;
-				curr_z--;
-				totalLength++;
-				failedMovesInARow = 0;
+		if (step(layout, curr_x, curr_y, curr_z, direction)) {
+			totalLength++;
+			failedMovesInARow = 0;
+
+			int rollVertical = rand() % 100;
+			if (rollVertical > 90 && curr_y < Y_SIZE - 1) {
+				int ramp_x = curr_x;
+				int ramp_y = curr_y;
+				int ramp_z = curr_z;
+				if (step(layout, curr_x, curr_y + 1, curr_z, direction)) {
+					curr_y++;
+					//create ramp (direcrtion)
+					layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] & ~CONTAINS_CEILING;
+					layout[ramp_x][ramp_y + 1][ramp_z] = layout[ramp_x][ramp_y + 1][ramp_z] & ~CONTAINS_FLOOR;
+				}
 			}
-			else failedMovesInARow++;
-			break;
-		case 1:
-			if (curr_x > 0 && layout[curr_x - 1][0][curr_z] == CONTAINS_ALL) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_LEFT;
-				layout[curr_x - 1][0][curr_z] = layout[curr_x - 1][0][curr_z] & ~CONTAINS_WALL_RIGHT;
-				curr_x--;
-				totalLength++;
-				failedMovesInARow = 0;
+			if (rollVertical < 10 && curr_y > 0) {
+				int ramp_x = curr_x;
+				int ramp_y = curr_y;
+				int ramp_z = curr_z;
+				if (step(layout, curr_x, curr_y - 1, curr_z, direction)) {
+					curr_y--;
+					//create ramp (direcrtion)
+					layout[ramp_x][ramp_y][ramp_z] = layout[ramp_x][ramp_y][ramp_z] & ~CONTAINS_FLOOR;
+					layout[ramp_x][ramp_y - 1][ramp_z] = layout[ramp_x][ramp_y - 1][ramp_z] & ~CONTAINS_CEILING;
+				}
 			}
-			else failedMovesInARow++;
-			break;
-		case 2:
-			if (curr_z < Z_SIZE - 1 && layout[curr_x][0][curr_z + 1] == CONTAINS_ALL) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_FRONT;
-				layout[curr_x][0][curr_z + 1] = layout[curr_x][0][curr_z + 1] & ~CONTAINS_WALL_BACK;
-				curr_z++;
-				totalLength++;
-				failedMovesInARow = 0;
-			}
-			else failedMovesInARow++;
-			break;
-		case 3:
-			if (curr_x < X_SIZE - 1 && layout[curr_x + 1][0][curr_z] == CONTAINS_ALL) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_RIGHT;
-				layout[curr_x + 1][0][curr_z] = layout[curr_x + 1][0][curr_z] & ~CONTAINS_WALL_LEFT;
-				curr_x++;
-				totalLength++;
-				failedMovesInARow = 0;
-			}
-			else failedMovesInARow++;
-			break;
 		}
+		else failedMovesInARow++;
 
 		int rollBranch = rand() % 100;
-		int rollEnd = rand() % 100;
+
 		if (rollBranch > 70 && recursionDepth < 3) {
-			totalLength += generatePath(layout, curr_x, curr_z, recursionDepth + 1);
+			totalLength += generatePath(layout, curr_x, curr_y, curr_z, recursionDepth + 1);
 		}
 		if (failedMovesInARow > 5) {
 			return totalLength;
 		}
 	}
-
-	/*
-	if (length < 2) {
-		if (curr_z > 0) {
-			if (rollBack > 30) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_BACK;
-				layout[curr_x][0][curr_z - 1] = layout[curr_x][0][curr_z - 1] & ~CONTAINS_WALL_FRONT;
-				generatePath(layout, curr_x, curr_z - 1, length + 1);
-			}
-		}
-
-		if (curr_x > 0) {
-			if (rollLeft > 30) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_LEFT;
-				layout[curr_x - 1][0][curr_z] = layout[curr_x - 1][0][curr_z] & ~CONTAINS_WALL_RIGHT;
-				generatePath(layout, curr_x - 1, curr_z, length + 1);
-			}
-		}
-
-		if (curr_z < Z_SIZE - 1) {
-			if (rollFront > 30) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_FRONT;
-				layout[curr_x][0][curr_z + 1] = layout[curr_x][0][curr_z + 1] & ~CONTAINS_WALL_BACK;
-				generatePath(layout, curr_x, curr_z + 1, length +1);
-			}
-		}
-
-		if (curr_x < X_SIZE - 1) {
-			if (rollBack > 30) {
-				layout[curr_x][0][curr_z] = layout[curr_x][0][curr_z] & ~CONTAINS_WALL_RIGHT;
-				layout[curr_x + 1][0][curr_z] = layout[curr_x + 1][0][curr_z] & ~CONTAINS_WALL_LEFT;
-				generatePath(layout, curr_x + 1, curr_z, length + 1);
-			}
-		}
-	}
-	*/
-	
 }
 
 int generateLayout(int*** out) {
-	return generatePath(out, 0, 0, 0);
+	return generatePath(out, 0, 0, 0, 0);
 }
 
 GridTile::GridTile() {

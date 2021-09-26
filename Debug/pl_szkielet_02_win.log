@@ -1,5 +1,5 @@
 ﻿  grid.cpp
 C:\Users\Kek\Desktop\xd\gwk_labirynt\object.h(38,1): warning C4305: "inicjowanie": obcięcie z "double" do "const float"
 C:\Users\Kek\Desktop\xd\gwk_labirynt\object.h(47,1): warning C4305: "inicjowanie": obcięcie z "double" do "const float"
-C:\Users\Kek\Desktop\xd\gwk_labirynt\grid.cpp(131,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\Kek\Desktop\xd\gwk_labirynt\grid.cpp(120,20): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
   pl_szkielet_02_win.vcxproj -> C:\Users\Kek\Desktop\xd\gwk_labirynt\Debug\pl_szkielet_02_win.exe

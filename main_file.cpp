@@ -165,7 +165,7 @@ int main(void)
 		// Ograniczenie żeby patrzeć max 90 st w górę lub w dół
 		kat_x = glm::clamp((float)(kat_x + speed_x * glfwGetTime()), -PI/2, PI/2);
 		kat_y += speed_y * glfwGetTime(); 
-		pos += (float)(walk_speed * glfwGetTime()) * calcDir(0, kat_y);
+		pos += (float)(walk_speed * glfwGetTime()) * calcDir(kat_x, kat_y);
 		glfwSetTime(0); //Wyzeruj licznik czasu
 		drawScene(window,kat_x,kat_y); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.
