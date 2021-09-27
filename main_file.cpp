@@ -31,8 +31,12 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "lodepng.h"
 #include "shaderprogram.h"
 #include "grid.h"
+#include "HitBox.h"
+#include "Collisions.h"
+
 
 Grid grid = Grid();
+HitBox camera = HitBox(-0.2f, 0.2f, -0.5f, 0.5f, -0.2f, 0.2f);
 
 float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
@@ -45,6 +49,35 @@ glm::vec3 prevPos = glm::vec3(pos);
 
 float aspectRatio = 1;
 
+void collisionAction()
+{
+	pos = glm::vec3(prevPos);
+}
+
+void checkForCollisions() 
+{
+	for (int i = 0; i < grid.x; i++)
+	{
+		for (int j = 0; j < grid.y; j++)
+		{
+			for (int k = 0; k < grid.z; k++)
+			{
+				GridTile*** temp = grid.getTiles();
+				std::vector<Object> temp2 = temp[i][j][k].objects;
+				for (int l = 0; l < temp2.size(); l++)
+				{
+					if (temp2[l].hitbox.usable == false)
+						continue;
+					else
+						if(Collisions::detectCollision(&camera, glm::translate(glm::mat4(1.0f), pos), &temp2[l].hitbox, temp2[l].getM()))
+							collisionAction();
+					
+				}
+			}
+		}
+	}
+}
+
 glm::vec3 calcDir(float kat_x, float kat_y) {
 	glm::vec4 dir = glm::vec4(0, 0, 1, 0);
 	glm::mat4 M = glm::rotate(glm::mat4(1.0f), kat_y, glm::vec3(0, 1, 0));
@@ -52,7 +85,6 @@ glm::vec3 calcDir(float kat_x, float kat_y) {
 	dir = M * dir;
 	return glm::vec3(dir);
 }
-
 
 void key_callback(
 	GLFWwindow* window,
@@ -96,7 +128,8 @@ void windowResizeCallback(GLFWwindow* window, int width, int height) {
 void initOpenGLProgram(GLFWwindow* window) {
     initShaders();
 	//************Tutaj umieszczaj kod, który należy wykonać raz, na początku programu************
-	glClearColor(0, 0, 0, 1); //Ustaw kolor czyszczenia bufora kolorów
+	glClearColor(0.2, 0.2, 0.2, 1); //Ustaw kolor czyszczenia bufora kolorów
+	//glClearColor(0, 0, 0, 1); //Ustaw kolor czyszczenia bufora kolorów
 	glEnable(GL_DEPTH_TEST); //Włącz test głębokości na pikselach
 	glfwSetWindowSizeCallback(window, windowResizeCallback);
 	glfwSetKeyCallback(window, key_callback);
@@ -112,7 +145,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 void drawScene(GLFWwindow* window,float kat_x,float kat_y) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Wyczyść bufor koloru i bufor głębokości
-	
+	checkForCollisions();
 	glm::mat4 V = glm::lookAt(pos, pos+calcDir(kat_x,kat_y), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), aspectRatio, 0.1f, 50.0f); //Wylicz macierz rzutowania
 

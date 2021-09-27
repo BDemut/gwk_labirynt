@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "shaderprogram.h"
 #include "allmodels.h"
+#include "HitBox.h"
 
 class Object {
 private:
@@ -20,6 +21,10 @@ public:
 	void draw(float,float,float);
 	Object(int, int, int, int);
 	Object();
+
+	glm::mat4 getM();
+	
+	HitBox hitbox;
 };
 
 const int OBJECT_FLOOR = 0;
@@ -73,6 +78,8 @@ const float ROTATIONS[OBJECT_MAX][4] = {
 	{PI / 4,0,0,1},
 	{PI / 4,1,0,0},
 };
+
+
 
 #endif OBJECT_H
 

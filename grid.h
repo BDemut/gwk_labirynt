@@ -9,21 +9,23 @@
 class GridTile {
 private:
 	int layout;
-	std::vector<Object> objects;
 	float r, g, b;
 public:
 	void draw();
 	GridTile(int, int, int, int);
 	GridTile();
 	int getLayout();
+	std::vector<Object> objects;
 };
 
 class Grid {
 private:
-	GridTile*** gridTiles;
 public:
+	GridTile*** gridTiles;
+	int x, y, z;
 	void draw();
 	Grid();
+	GridTile*** getTiles();
 };
 
 const int CONTAINS_ALL =		0b0000111111;	//only walls, ceiling and floor, no ramps
@@ -41,4 +43,6 @@ const int CONTAINS_RAMP_BF =	0b1000000000;
 const int X_SIZE = 10;
 const int Y_SIZE = 3;
 const int Z_SIZE = 10;
+
+const float defaultGTBounds[6] = { -1.0f, 1.0f, 0.0f, 2.0f, -1.0f, 1.0f };
 #endif

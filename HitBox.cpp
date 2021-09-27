@@ -4,6 +4,23 @@ HitBox::HitBox(float* vertices, int count)
 {
 	calculateHitBox(vertices, count);
 	calculateVerts();
+	usable = true;
+}
+HitBox::HitBox(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+{
+	this->minX = minX;
+	this->maxX = maxX;
+	this->minY = minY;
+	this->maxY = maxY;
+	this->minZ = minZ;
+	this->maxZ = maxZ;
+	calculateVerts();
+	usable = true;
+}
+HitBox::HitBox()
+{
+	minX = maxX = minY = maxY = minZ = maxZ = 0;
+	usable = false;
 }
 
 void HitBox::calculateHitBox(float* vertices, int count)
@@ -87,4 +104,15 @@ void HitBox::trans(glm::mat4 M, glm::vec2* tab)
 	temp = glm::vec4(maxX, maxY, minZ, 1.0f);
 	temp = M * temp;
 	tab[3] = glm::vec2(temp.x, temp.z);
+}
+
+void HitBox::trans2(glm::mat4 M, float* tab)
+{
+	glm::vec4 temp = glm::vec4(minX, minY, minZ, 1.0f);
+	temp = M * temp;
+	tab[0] = temp.y;
+
+	temp = glm::vec4(minX, maxY, minZ, 1.0f);
+	temp = M * temp;
+	tab[1] = temp.y;
 }

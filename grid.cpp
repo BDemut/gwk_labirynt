@@ -154,6 +154,10 @@ int GridTile::getLayout()
 }
 
 Grid::Grid() {
+	x = X_SIZE;
+	y = Y_SIZE;
+	z = Z_SIZE;
+
 	int l = 0;
 	int attempts = 0;
 	int*** layout = new int** [X_SIZE];
@@ -191,4 +195,9 @@ void Grid::draw() {
 			}
 		}
 	}
+}
+
+GridTile*** Grid::getTiles()
+{
+	return this->gridTiles;
 }

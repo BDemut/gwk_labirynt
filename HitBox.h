@@ -4,12 +4,15 @@
 
 class HitBox
 {
+public:
 	float minX;
 	float maxX;
 	float minY;
 	float maxY;
 	float minZ;
 	float maxZ;
+
+	bool usable;
 
 	unsigned int indices[24] =
 	{
@@ -30,9 +33,14 @@ class HitBox
 	float* hitboxVerts = new float[32];
 
 	HitBox(float* vertices, int count);
+	HitBox(float minX, float maxX, float minY, float maxY, float minZ, float maxZ);
+	HitBox();
+	void trans(glm::mat4 M, glm::vec2* tab);
+	void trans2(glm::mat4 M, float* tab);
 
+
+private:
 	void calculateHitBox(float* vertices, int count);
 	void calculateVerts();
-	void trans(glm::mat4 M, glm::vec2* tab);
 };
 
