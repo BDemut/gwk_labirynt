@@ -1,6 +1,7 @@
 #include "object.h"
 
 Object::Object(const int type, int x, int y, int z) {
+	this->type = type;
 	scale = glm::vec3(SCALES[type][0], SCALES[type][1], SCALES[type][2]);
 	translation = glm::vec3(TRANSLATIONS[type][0] + (x * 2), TRANSLATIONS[type][1] + (y * 2), TRANSLATIONS[type][2] + (z * 2));
 	rotationAngle = ROTATIONS[type][0];

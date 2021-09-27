@@ -148,6 +148,11 @@ void GridTile::draw() {
 		objects[i].draw(r,g,b);
 }
 
+int GridTile::getLayout()
+{
+	return layout;
+}
+
 Grid::Grid() {
 	int l = 0;
 	int attempts = 0;

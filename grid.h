@@ -15,6 +15,7 @@ public:
 	void draw();
 	GridTile(int, int, int, int);
 	GridTile();
+	int getLayout();
 };
 
 class Grid {

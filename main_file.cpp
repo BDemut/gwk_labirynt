@@ -41,6 +41,7 @@ float walk_speed = 0;
 float kat_x = 0;
 
 glm::vec3 pos = glm::vec3(0.0, 0.8, 0.0); //TODO: zamienić 0.8 na jakąś wysokość postaci
+glm::vec3 prevPos = glm::vec3(pos);
 
 float aspectRatio = 1;
 
@@ -164,7 +165,8 @@ int main(void)
 	{
 		// Ograniczenie żeby patrzeć max 90 st w górę lub w dół
 		kat_x = glm::clamp((float)(kat_x + speed_x * glfwGetTime()), -PI/2, PI/2);
-		kat_y += speed_y * glfwGetTime(); 
+		kat_y += speed_y * glfwGetTime();
+		prevPos = glm::vec3(pos);
 		pos += (float)(walk_speed * glfwGetTime()) * calcDir(kat_x, kat_y);
 		glfwSetTime(0); //Wyzeruj licznik czasu
 		drawScene(window,kat_x,kat_y); //Wykonaj procedurę rysującą

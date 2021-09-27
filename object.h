@@ -15,6 +15,7 @@ private:
 	glm::vec3 translation;
 	glm::vec3 rotation;
 	float rotationAngle;
+	int type;
 public:
 	void draw(float,float,float);
 	Object(int, int, int, int);
