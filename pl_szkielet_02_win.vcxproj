@@ -32,8 +32,10 @@
     <ClInclude Include="torus.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="grid.cpp" />
+    <ClCompile Include="HitBox.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main_file.cpp" />
     <ClCompile Include="model.cpp" />
@@ -45,9 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="f_constant.glsl" />
-    <None Include="f_lambert.glsl" />
+    <None Include="f_shader.glsl" />
     <None Include="v_constant.glsl" />
-    <None Include="v_lambert.glsl" />
+    <None Include="v_shader.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

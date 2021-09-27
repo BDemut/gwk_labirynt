@@ -80,18 +80,24 @@
     <ClCompile Include="Object.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Collisions.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="HitBox.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="f_constant.glsl">
       <Filter>Pliki zasobów</Filter>
     </None>
-    <None Include="f_lambert.glsl">
-      <Filter>Pliki zasobów</Filter>
-    </None>
     <None Include="v_constant.glsl">
       <Filter>Pliki zasobów</Filter>
     </None>
-    <None Include="v_lambert.glsl">
+    <None Include="f_shader.glsl">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="v_shader.glsl">
       <Filter>Pliki zasobów</Filter>
     </None>
   </ItemGroup>
