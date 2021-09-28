@@ -9,7 +9,7 @@ Object::Object(const int type, int x, int y, int z) {
 	if (type >= 1 && type <= 4)
 		hitbox = HitBox(Models::cube.vertices, Models::cube.vertexCount, 0);
 	if (type >= 6 && type <= 9)
-		;
+		hitbox = HitBox(y, 3, type, glm::ivec3(x,y,z));
 	if (type == 0)
 		hitbox = HitBox(Models::cube.vertices, Models::cube.vertexCount, y, 1);
 	if (type == 5)
@@ -36,11 +36,10 @@ glm::mat4 Object::getRotationMatrix()
 	return M;
 }
 
-glm::mat4 Object::getTSMatrix()
+glm::mat4 Object::getTMatrix()
 {
 	glm::mat4 M = glm::mat4(1.0f);
 	M = glm::translate(M, translation);
-	M = glm::scale(M, scale);
 	return M;
 }
 

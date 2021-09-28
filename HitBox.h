@@ -21,6 +21,8 @@ public:
 
 	float** heightMap;
 
+	glm::ivec3 tile;
+
 	unsigned int indices[24] =
 	{
 		0,1,
@@ -42,10 +44,11 @@ public:
 	HitBox(float* vertices, int count, int type);
 	HitBox(float* vertices, int count, int y, int type);
 	HitBox(float minX, float maxX, float minY, float maxY, float minZ, float maxZ, int type);
+	HitBox(int type, int y, int internalType, glm::ivec3 tile);
 	HitBox();
 	void trans(glm::mat4 M, glm::vec2* tab);
 	void trans2(glm::mat4 M, float* tab);
-
+	void interpolateMap(float** map, int xSize, int zSize, float x0, float x1, float z0, float z1);
 
 private:
 	void calculateHitBox(float* vertices, int count);
