@@ -23,7 +23,8 @@ public:
 	Object();
 
 	glm::mat4 getM();
-	
+	glm::mat4 getRotationMatrix();
+	glm::mat4 getTMatrix();
 	HitBox hitbox;
 };
 

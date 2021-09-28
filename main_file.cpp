@@ -26,6 +26,7 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include <glm/gtc/matrix_transform.hpp>
 #include <stdlib.h>
 #include <stdio.h>
+#include <cmath>
 #include "constants.h"
 #include "allmodels.h"
 #include "lodepng.h"
@@ -37,7 +38,7 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 GLuint wallTex;
 
 Grid grid = Grid();
-HitBox camera = HitBox(-0.2f, 0.2f, -0.5f, 0.5f, -0.2f, 0.2f);
+HitBox camera = HitBox(-0.2f, 0.2f, -0.8f, 0.2f, -0.2f, 0.2f, 5);
 
 float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
@@ -46,22 +47,112 @@ float walk_speed = 0;
 float kat_x = 0;
 
 glm::vec3 pos = glm::vec3(0.0, 0.8, 0.0); //TODO: zamienić 0.8 na jakąś wysokość postaci
+//glm::vec3 pos = glm::vec3(4.0, 0.8, 12.0); //TODO: zamienić 0.8 na jakąś wysokość postaci
 glm::vec3 prevPos = glm::vec3(pos);
 
 float aspectRatio = 1;
 
-void collisionAction()
+void calculateHeight(HitBox* obj, glm::ivec3 currentTile, float cameraDelta)
 {
-	pos = glm::vec3(prevPos);
+	int stepX = obj->hmXsize - 1;
+	int stepZ = obj->hmZsize - 1;
+	float tempXcoord = (1 + pos.x - 2 * currentTile.x) / 2;
+	float tempZcoord = (1 + pos.z - 2 * currentTile.z) / 2;
+	float tempX1val = obj->heightMap[(int)floor(stepX * tempXcoord)][(int)floor(stepZ * tempZcoord)] * fmod(stepX * tempXcoord, 1.0) +
+		obj->heightMap[(int)ceil(stepX * tempXcoord)][(int)floor(stepZ * tempZcoord)] * (1 - fmod(stepX * tempXcoord, 1.0));
+	float tempX2val = obj->heightMap[(int)floor(stepX * tempXcoord)][(int)ceil(stepZ * tempZcoord)] * fmod(stepX * tempXcoord, 1.0) +
+		obj->heightMap[(int)ceil(stepX * tempXcoord)][(int)ceil(stepZ * tempZcoord)] * (1 - fmod(stepX * tempXcoord, 1.0));
+	float height = tempX1val * fmod(stepZ * tempZcoord, 1.0) + tempX2val * (1 - fmod(stepZ * tempZcoord, 1.0));
+	pos.y = height +  -1 *cameraDelta;
+	//if (obj->hitboxType == 3) fprintf(stderr, "%f %f \n", pos.y, height);
+}
+
+void calculateHeightRamps(HitBox* obj, glm::ivec3 currentTile, float cameraDelta)
+{
+	float tempXcoord = (1 + pos.x - 2 * obj->tile.x) / 2;
+	float tempZcoord = (1 + pos.z - 2 * obj->tile.z) / 2;
+	float tempX1val = obj->heightMap[0][0] * fmod(tempXcoord, 1.0) +
+		obj->heightMap[1][0] * (1 - fmod(tempXcoord, 1.0));
+	float tempX2val = obj->heightMap[0][1] * fmod(tempXcoord, 1.0) +
+		obj->heightMap[1][1] * (1 - fmod(tempXcoord, 1.0));
+	float height = tempX1val * fmod(tempZcoord, 1.0) + tempX2val * (1 - fmod(tempZcoord, 1.0));
+	pos.y = height + -1 * cameraDelta + 0.3;
+	fprintf(stderr, "%f %f %f %f \n", pos.y, height, tempXcoord, tempZcoord);
+	
+}
+void collisionAction(HitBox* obj1, HitBox* obj2, glm::ivec3 currentTile)
+{
+	if (obj1->hitboxType == 0 || obj2->hitboxType == 0)
+	{
+		pos = glm::vec3(prevPos);
+	}
+	else if (obj1->hitboxType == 3 || obj2->hitboxType == 3)
+	{
+		if (obj1->hitboxType == 3)
+		{
+			calculateHeightRamps(obj1, currentTile, camera.minY);
+			fprintf(stderr, "Detected \n");
+		}
+		else if (obj2->hitboxType == 3)
+		{
+			calculateHeightRamps(obj2, currentTile, camera.minY);
+			fprintf(stderr, "Detected \n");
+		}
+	}
+	else if (obj1->hitboxType == 1 || obj2->hitboxType == 1)
+	{
+		if (obj1->hitboxType == 1)
+		{
+			calculateHeight(obj1, currentTile, camera.minY);
+		}
+		else if (obj2->hitboxType == 1)
+		{
+			calculateHeight(obj2, currentTile, camera.minY);
+		}
+	}
+	else if (obj1->hitboxType == 2 || obj2->hitboxType == 2)
+	{
+		if (obj1->hitboxType == 2)
+		{
+			calculateHeight(obj1, currentTile, camera.maxY);
+		}
+		else if (obj2->hitboxType == 2)
+		{
+			calculateHeight(obj2, currentTile, camera.maxY);
+		}
+	}
+
+}
+
+glm::ivec3 currTile(glm::vec3 pos)
+{
+	float temp;
+	int currTileX;
+	int currTileY;
+	int currTileZ;
+	modf((pos.x + 1) / 2, &temp);
+	currTileX = (int)temp;
+	modf((pos.y) / 2, &temp);
+	currTileY = (int)temp;
+	modf((pos.z + 1) / 2, &temp);
+	currTileZ = (int)temp;
+	return glm::ivec3(currTileX, currTileY, currTileZ);
 }
 
 void checkForCollisions() 
 {
-	for (int i = 0; i < grid.x; i++)
+	glm::ivec3 currentTile = currTile(pos);
+
+	//fprintf(stderr, "X: %d Y: %d Z: %d \n", currentTile.x, currentTile.y, currentTile.z);
+
+	int maxi = currentTile.x >= grid.x - 2 ? grid.x : currentTile.x + 2;
+	int maxk = currentTile.z >= grid.z - 2 ? grid.z : currentTile.z + 2;
+
+	for (int i = currentTile.x < 2 ? 0 : currentTile.x - 2; i < maxi; i++)
 	{
 		for (int j = 0; j < grid.y; j++)
 		{
-			for (int k = 0; k < grid.z; k++)
+			for (int k = currentTile.z < 2 ? 0 : currentTile.z - 2; k < maxk; k++)
 			{
 				GridTile*** temp = grid.getTiles();
 				std::vector<Object> temp2 = temp[i][j][k].objects;
@@ -70,10 +161,11 @@ void checkForCollisions()
 					if (temp2[l].hitbox.usable == false)
 						continue;
 					else
-						if(Collisions::detectCollision(&camera, glm::translate(glm::mat4(1.0f), pos), &temp2[l].hitbox, temp2[l].getM()))
-							collisionAction();
-					
+						if(Collisions::detectCollision(&camera, glm::translate(glm::mat4(1.0f), pos), &temp2[l].hitbox,
+							temp2[l].hitbox.hitboxType == 3 ? temp2[l].getTMatrix() : temp2[l].getM()))
+							collisionAction(&camera, &temp2[l].hitbox, currentTile);
 				}
+				temp2.clear();
 			}
 		}
 	}
@@ -172,6 +264,8 @@ void drawScene(GLFWwindow* window,float kat_x,float kat_y) {
 	//************Tutaj umieszczaj kod rysujący obraz******************l
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Wyczyść bufor koloru i bufor głębokości
 	checkForCollisions();
+	//fprintf(stderr, "X: %f Z: %f \n", pos.x, pos.z);
+
 	glm::mat4 V = glm::lookAt(pos, pos+calcDir(kat_x,kat_y), glm::vec3(0.0f, 1.0f, 0.0f)); //Wylicz macierz widoku
 	glm::mat4 P = glm::perspective(glm::radians(50.0f), aspectRatio, 0.1f, 50.0f); //Wylicz macierz rzutowania
 
