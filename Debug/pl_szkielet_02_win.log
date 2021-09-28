@@ -1,4 +1,7 @@
-﻿  Collisions.cpp
-  HitBox.cpp
-  Generowanie kodu...
+﻿  main_file.cpp
+C:\Users\Kek\Desktop\xd\gwk_labirynt\object.h(54,1): warning C4305: "inicjowanie": obcięcie z "double" do "const float"
+C:\Users\Kek\Desktop\xd\gwk_labirynt\object.h(67,1): warning C4305: "inicjowanie": obcięcie z "double" do "const float"
+C:\Users\Kek\Desktop\xd\gwk_labirynt\main_file.cpp(68,23): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\Users\Kek\Desktop\xd\gwk_labirynt\main_file.cpp(155,31): warning C4305: "argument": obcięcie z "double" do "GLclampf"
+C:\Users\Kek\Desktop\xd\gwk_labirynt\main_file.cpp(231,35): warning C4244: "+=": konwersja z "double" do "float", możliwa utrata danych
   pl_szkielet_02_win.vcxproj -> C:\Users\Kek\Desktop\xd\gwk_labirynt\Debug\pl_szkielet_02_win.exe
