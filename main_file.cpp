@@ -56,11 +56,24 @@ void collisionAction()
 
 void checkForCollisions() 
 {
-	for (int i = 0; i < grid.x; i++)
+	float temp;
+	int currTileX;
+	int currTileZ;
+	modf((pos.x + 1) / 2, &temp);
+	currTileX = (int)temp;
+	modf((pos.z + 1) / 2, &temp);
+	currTileZ = (int)temp;
+
+	//int i = currTileX < 1 ? 0 : currTileX - 1;
+	//int k = currTileZ < 1 ? 0 : currTileZ - 1;
+	int maxi = currTileX >= grid.x - 2 ? grid.x - 1 : currTileX + 2;
+	int maxk = currTileZ >= grid.z - 2 ? grid.z - 1 : currTileZ + 2;
+
+	for (int i = currTileX < 2 ? 0 : currTileX - 2; i < maxi; i++)
 	{
 		for (int j = 0; j < grid.y; j++)
 		{
-			for (int k = 0; k < grid.z; k++)
+			for (int k = currTileZ < 2 ? 0 : currTileZ - 2; k < maxk; k++)
 			{
 				GridTile*** temp = grid.getTiles();
 				std::vector<Object> temp2 = temp[i][j][k].objects;
