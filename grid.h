@@ -40,9 +40,9 @@ const int CONTAINS_RAMP_FB =	0b0010000000;
 const int CONTAINS_RAMP_RL =	0b0100000000;
 const int CONTAINS_RAMP_BF =	0b1000000000;
 
-const int X_SIZE = 10;
-const int Y_SIZE = 3;
-const int Z_SIZE = 10;
+const int X_SIZE = 15;
+const int Y_SIZE = 4;
+const int Z_SIZE = 15;
 
 const float defaultGTBounds[6] = { -1.0f, 1.0f, 0.0f, 2.0f, -1.0f, 1.0f };
 #endif

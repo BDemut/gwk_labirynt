@@ -36,6 +36,11 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "Collisions.h"
 
 GLuint wallTex;
+GLuint stepsbfTex;
+GLuint stepslrTex;
+GLuint stepsfbTex;
+GLuint stepsrlTex;
+GLuint floorTex;
 
 Grid grid = Grid();
 HitBox camera = HitBox(-0.2f, 0.2f, -0.8f, 0.2f, -0.2f, 0.2f, 5);
@@ -189,10 +194,10 @@ void key_callback(
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_W) walk_speed = 2;
 		if (key == GLFW_KEY_S) walk_speed = -2;
-		if (key == GLFW_KEY_A) speed_y = 1;
-		if (key == GLFW_KEY_D) speed_y = -1;
-		if (key == GLFW_KEY_UP) speed_x = -1;
-		if (key == GLFW_KEY_DOWN) speed_x = 1;
+		if (key == GLFW_KEY_A) speed_y = 1.5;
+		if (key == GLFW_KEY_D) speed_y = -1.5;
+		if (key == GLFW_KEY_UP) speed_x = -2;
+		if (key == GLFW_KEY_DOWN) speed_x = 2;
 		if (key == GLFW_KEY_R) kat_x = 0; //Resetuje kąt patrzenia w górę i dół
 		
 	}
@@ -250,12 +255,22 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetWindowSizeCallback(window, windowResizeCallback);
 	glfwSetKeyCallback(window, key_callback);
 	wallTex = readTexture("wall.png");
+	stepsbfTex = readTexture("steps_bf.png");
+	stepslrTex = readTexture("steps_lr.png");
+	stepsfbTex = readTexture("steps_fb.png");
+	stepsrlTex = readTexture("steps_rl.png");
+	floorTex = readTexture("floor.png");
 }
 
 //Zwolnienie zasobów zajętych przez program
 void freeOpenGLProgram(GLFWwindow* window) {
     freeShaders();
 	glDeleteTextures(1, &wallTex);
+	glDeleteTextures(1, &stepsfbTex);
+	glDeleteTextures(1, &stepsbfTex);
+	glDeleteTextures(1, &stepslrTex);
+	glDeleteTextures(1, &stepsrlTex);
+	glDeleteTextures(1, &floorTex);
     //************Tutaj umieszczaj kod, który należy wykonać po zakończeniu pętli głównej************
 }
 
@@ -274,10 +289,6 @@ void drawScene(GLFWwindow* window,float kat_x,float kat_y) {
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P)); //Załaduj do programu cieniującego macierz rzutowania
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V)); //Załaduj do programu cieniującego macierz widoku
 
-	glUniform1i(sp->u("textureMap0"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, wallTex);
-
 	grid.draw();
 
 	glfwSwapBuffers(window); //Skopiuj bufor tylny do bufora przedniego
@@ -289,9 +300,14 @@ int main(void)
 
 	glfwSetErrorCallback(error_callback);//Zarejestruj procedurę obsługi błędów
 
-	if (!glfwInit()) { //Zainicjuj bibliotekę GLFW
-		fprintf(stderr, "Nie można zainicjować GLFW.\n");
-		exit(EXIT_FAILURE);
+	try {
+		if (!glfwInit()) { //Zainicjuj bibliotekę GLFW
+			fprintf(stderr, "Nie można zainicjować GLFW.\n");
+			exit(EXIT_FAILURE);
+		}
+	}
+	catch (...) {
+
 	}
 
 	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Utwórz okno 500x500 o tytule "OpenGL" i kontekst OpenGL.
@@ -335,4 +351,39 @@ int main(void)
 	glfwDestroyWindow(window); //Usuń kontekst OpenGL i okno
 	glfwTerminate(); //Zwolnij zasoby zajęte przez GLFW
 	exit(EXIT_SUCCESS);
+}
+
+
+void Object::draw(float r, float g, float b) {
+	glm::mat4 M = this->getM();
+	glUniform4f(sp->u("color"), r, g, b, 1); //Ustaw kolor rysowania obiektu
+	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M)); //Załaduj do programu cieniującego macierz modelu
+
+	glUniform1i(sp->u("textureMap0"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	switch (type)
+	{
+		case OBJECT_RAMP_BF:
+			glBindTexture(GL_TEXTURE_2D, stepsbfTex);
+			break;
+		case OBJECT_RAMP_FB:
+			glBindTexture(GL_TEXTURE_2D, stepsfbTex);
+			break;
+		case OBJECT_RAMP_RL:
+			glBindTexture(GL_TEXTURE_2D, stepsrlTex);
+			break;
+		case OBJECT_RAMP_LR:
+			glBindTexture(GL_TEXTURE_2D, stepslrTex);
+			break;
+		case OBJECT_FLOOR:
+			glBindTexture(GL_TEXTURE_2D, floorTex);
+			break;
+		default:
+			glBindTexture(GL_TEXTURE_2D, wallTex);
+			break;
+	}
+
+	Models::cube.drawSolid(); //Narysuj obiekt
+
+	glDisableVertexAttribArray(sp->a("texCoord0"));
 }
