@@ -1,12 +1,48 @@
 #include "HitBox.h"
 
-HitBox::HitBox(float* vertices, int count) 
+HitBox::HitBox(float* vertices, int count, int type) 
 {
 	calculateHitBox(vertices, count);
 	calculateVerts();
 	usable = true;
+	this->hitboxType = type;
+	heightMap = NULL;
 }
-HitBox::HitBox(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+
+HitBox::HitBox(float* vertices, int count, int y, int type)
+{
+	calculateHitBox(vertices, count);
+	calculateVerts();
+	usable = true;
+	this->hitboxType = type;
+	heightMap = new float* [hmXsize];
+	for (int i = 0; i < hmXsize; i++)
+	{
+		heightMap[i] = new float[hmZsize];
+	}
+	if (type == 1)
+	{
+		for (int i = 0; i < hmXsize; i++)
+		{
+			for (int j = 0; j < hmZsize; j++)
+			{
+				this->heightMap[i][j] = y * 2 + 0.1;
+			}
+		}
+	}
+	else if (type == 2)
+		for (int i = 0; i < hmXsize; i++)
+		{
+			for (int j = 0; j < hmZsize; j++)
+			{
+				this->heightMap[i][j] = y * 2 + 1.9;
+			}
+		}
+	
+}
+
+
+HitBox::HitBox(float minX, float maxX, float minY, float maxY, float minZ, float maxZ, int type)
 {
 	this->minX = minX;
 	this->maxX = maxX;
@@ -16,11 +52,13 @@ HitBox::HitBox(float minX, float maxX, float minY, float maxY, float minZ, float
 	this->maxZ = maxZ;
 	calculateVerts();
 	usable = true;
+	this->hitboxType = type;
 }
 HitBox::HitBox()
 {
 	minX = maxX = minY = maxY = minZ = maxZ = 0;
 	usable = false;
+	this->hitboxType = 4;
 }
 
 void HitBox::calculateHitBox(float* vertices, int count)

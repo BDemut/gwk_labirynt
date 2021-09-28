@@ -7,7 +7,13 @@ Object::Object(const int type, int x, int y, int z) {
 	rotationAngle = ROTATIONS[type][0];
 	rotation = glm::vec3(ROTATIONS[type][1], ROTATIONS[type][2], ROTATIONS[type][3]);
 	if (type >= 1 && type <= 4)
-		hitbox = HitBox(Models::cube.vertices, Models::cube.vertexCount);
+		hitbox = HitBox(Models::cube.vertices, Models::cube.vertexCount, 0);
+	if (type >= 6 && type <= 9)
+		;
+	if (type == 0)
+		hitbox = HitBox(Models::cube.vertices, Models::cube.vertexCount, y, 1);
+	if (type == 5)
+		hitbox = HitBox(Models::cube.vertices, Models::cube.vertexCount, y, 2);
 }
 
 Object::Object() {}
@@ -18,6 +24,22 @@ glm::mat4 Object::getM()
 	M = glm::translate(M, translation);
 	if (rotationAngle >= -5)
 		M = glm::rotate(M, rotationAngle, rotation);
+	M = glm::scale(M, scale);
+	return M;
+}
+
+glm::mat4 Object::getRotationMatrix()
+{
+	glm::mat4 M = glm::mat4(1.0f);
+	if (rotationAngle >= -5)
+		M = glm::rotate(M, rotationAngle, rotation);
+	return M;
+}
+
+glm::mat4 Object::getTSMatrix()
+{
+	glm::mat4 M = glm::mat4(1.0f);
+	M = glm::translate(M, translation);
 	M = glm::scale(M, scale);
 	return M;
 }

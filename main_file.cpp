@@ -26,6 +26,7 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include <glm/gtc/matrix_transform.hpp>
 #include <stdlib.h>
 #include <stdio.h>
+#include <cmath>
 #include "constants.h"
 #include "allmodels.h"
 #include "lodepng.h"
@@ -36,7 +37,7 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 
 
 Grid grid = Grid();
-HitBox camera = HitBox(-0.2f, 0.2f, -0.5f, 0.5f, -0.2f, 0.2f);
+HitBox camera = HitBox(-0.2f, 0.2f, -0.8f, 0.2f, -0.2f, 0.2f, 5);
 
 float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
@@ -49,31 +50,76 @@ glm::vec3 prevPos = glm::vec3(pos);
 
 float aspectRatio = 1;
 
-void collisionAction()
+void calculateHeight(HitBox* obj, glm::ivec3 currentTile, float cameraDelta)
 {
-	pos = glm::vec3(prevPos);
+	float tempXcoord = (1 + pos.x - 2 * currentTile.x) / 2;
+	float tempZcoord = (1 + pos.z - 2 * currentTile.z) / 2;
+	float tempX1val = obj->heightMap[(int)floor(32 * tempXcoord)][(int)floor(31 * tempZcoord)] * fmod(31 * tempXcoord, 1.0) +
+		obj->heightMap[(int)ceil(31 * tempXcoord)][(int)floor(31 * tempZcoord)] * (1 - fmod(31 * tempXcoord, 1.0));
+	float tempX2val = obj->heightMap[(int)floor(31 * tempXcoord)][(int)ceil(31 * tempZcoord)] * fmod(31 * tempXcoord, 1.0) +
+		obj->heightMap[(int)ceil(31 * tempXcoord)][(int)ceil(31 * tempZcoord)] * (1 - fmod(31 * tempXcoord, 1.0));
+	float height = tempX1val * fmod(31 * tempZcoord, 1.0) + tempX2val * (1 - fmod(31 * tempZcoord, 1.0));
+	pos.y = height +  -1 *cameraDelta; //currentTile.y * 2 + height + (- 1 * camera.minY);
+	//fprintf(stderr, "%f %f \n", pos.y, height);
+}
+
+void collisionAction(HitBox* obj1, HitBox* obj2, glm::ivec3 currentTile)
+{
+	if (obj1->hitboxType == 0 || obj2->hitboxType == 0)
+		pos = glm::vec3(prevPos);
+	else if (obj1->hitboxType == 1 || obj2->hitboxType == 1)
+	{
+		if (obj1->hitboxType == 1)
+		{
+			calculateHeight(obj1, currentTile, camera.minY);
+		}
+		else if (obj2->hitboxType == 1)
+		{
+			calculateHeight(obj2, currentTile, camera.minY);
+		}
+	}
+	else if (obj1->hitboxType == 2 || obj2->hitboxType == 2)
+	{
+		if (obj1->hitboxType == 2)
+		{
+			calculateHeight(obj1, currentTile, camera.maxY);
+		}
+		else if (obj2->hitboxType == 2)
+		{
+			calculateHeight(obj2, currentTile, camera.maxY);
+		}
+	}
+}
+
+glm::ivec3 currTile(glm::vec3 pos)
+{
+	float temp;
+	int currTileX;
+	int currTileY;
+	int currTileZ;
+	modf((pos.x + 1) / 2, &temp);
+	currTileX = (int)temp;
+	modf((pos.y) / 2, &temp);
+	currTileY = (int)temp;
+	modf((pos.z + 1) / 2, &temp);
+	currTileZ = (int)temp;
+	return glm::ivec3(currTileX, currTileY, currTileZ);
 }
 
 void checkForCollisions() 
 {
-	float temp;
-	int currTileX;
-	int currTileZ;
-	modf((pos.x + 1) / 2, &temp);
-	currTileX = (int)temp;
-	modf((pos.z + 1) / 2, &temp);
-	currTileZ = (int)temp;
+	glm::ivec3 currentTile = currTile(pos);
 
-	//int i = currTileX < 1 ? 0 : currTileX - 1;
-	//int k = currTileZ < 1 ? 0 : currTileZ - 1;
-	int maxi = currTileX >= grid.x - 2 ? grid.x - 1 : currTileX + 2;
-	int maxk = currTileZ >= grid.z - 2 ? grid.z - 1 : currTileZ + 2;
+	//fprintf(stderr, "X: %d Y: %d Z: %d \n", currentTile.x, currentTile.y, currentTile.z);
 
-	for (int i = currTileX < 2 ? 0 : currTileX - 2; i < maxi; i++)
+	int maxi = currentTile.x >= grid.x - 2 ? grid.x : currentTile.x + 2;
+	int maxk = currentTile.z >= grid.z - 2 ? grid.z : currentTile.z + 2;
+
+	for (int i = currentTile.x < 2 ? 0 : currentTile.x - 2; i < maxi; i++)
 	{
 		for (int j = 0; j < grid.y; j++)
 		{
-			for (int k = currTileZ < 2 ? 0 : currTileZ - 2; k < maxk; k++)
+			for (int k = currentTile.z < 2 ? 0 : currentTile.z - 2; k < maxk; k++)
 			{
 				GridTile*** temp = grid.getTiles();
 				std::vector<Object> temp2 = temp[i][j][k].objects;
@@ -83,7 +129,7 @@ void checkForCollisions()
 						continue;
 					else
 						if(Collisions::detectCollision(&camera, glm::translate(glm::mat4(1.0f), pos), &temp2[l].hitbox, temp2[l].getM()))
-							collisionAction();
+							collisionAction(&camera, &temp2[l].hitbox, currentTile);
 					
 				}
 			}

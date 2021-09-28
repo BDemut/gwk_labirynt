@@ -12,7 +12,14 @@ public:
 	float minZ;
 	float maxZ;
 
+	int hmXsize = 32;
+	int hmZsize = 32;
+
 	bool usable;
+
+	int hitboxType;
+
+	float** heightMap;
 
 	unsigned int indices[24] =
 	{
@@ -32,8 +39,9 @@ public:
 
 	float* hitboxVerts = new float[32];
 
-	HitBox(float* vertices, int count);
-	HitBox(float minX, float maxX, float minY, float maxY, float minZ, float maxZ);
+	HitBox(float* vertices, int count, int type);
+	HitBox(float* vertices, int count, int y, int type);
+	HitBox(float minX, float maxX, float minY, float maxY, float minZ, float maxZ, int type);
 	HitBox();
 	void trans(glm::mat4 M, glm::vec2* tab);
 	void trans2(glm::mat4 M, float* tab);
@@ -44,3 +52,9 @@ private:
 	void calculateVerts();
 };
 
+const int WALLS = 0;
+const int FLOOR = 1;
+const int CEIL = 2;
+const int RAMPS = 3;
+const int OTHER = 4;
+const int CAMERA = 5;
