@@ -48,6 +48,7 @@ HitBox camera = HitBox(-0.2f, 0.2f, -0.8f, 0.2f, -0.2f, 0.2f, 5);
 float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
 float walk_speed = 0;
+glm::vec3 gravity = glm::vec3(0.0f, -0.5f, 0.0f);
 
 float kat_x = 0;
 
@@ -340,7 +341,7 @@ int main(void)
 		kat_x = glm::clamp((float)(kat_x + speed_x * glfwGetTime()), -PI/2, PI/2);
 		kat_y += speed_y * glfwGetTime();
 		prevPos = glm::vec3(pos);
-		pos += (float)(walk_speed * glfwGetTime()) * calcDir(kat_x, kat_y);
+		pos += (float)(walk_speed * glfwGetTime()) * calcDir(0, kat_y) +(float) glfwGetTime() * gravity;
 		glfwSetTime(0); //Wyzeruj licznik czasu
 		drawScene(window,kat_x,kat_y); //Wykonaj procedurę rysującą
 		glfwPollEvents(); //Wykonaj procedury callback w zalezności od zdarzeń jakie zaszły.

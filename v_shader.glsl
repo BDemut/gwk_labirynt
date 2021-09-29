@@ -25,10 +25,10 @@ void main(void) {
     float d;
 
     d = distance(V*M*vertex, lp);
-    if (d < 5)
-        d = 1 - (d / 5);
-    else
-        d = 0;
+    //if (d < 5)
+        d = 1 - (d / 10);
+    //else
+        //d = 0;
 
     vec4 l = lp - normalize(V*M*vertex);
     vec4 n = normalize(V*M*normal);
