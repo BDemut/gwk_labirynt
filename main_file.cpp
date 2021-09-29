@@ -48,7 +48,7 @@ HitBox camera = HitBox(-0.2f, 0.2f, -0.8f, 0.2f, -0.2f, 0.2f, 5);
 float speed_x = 0; //[radiany/s]
 float speed_y = 0; //[radiany/s]
 float walk_speed = 0;
-glm::vec3 gravity = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 gravity = glm::vec3(0.0f, -0.2f, 0.0f);
 
 float kat_x = 0;
 
@@ -83,7 +83,7 @@ void calculateHeightRamps(HitBox* obj, glm::ivec3 currentTile, float cameraDelta
 		obj->heightMap[1][1] * (1 - fmod(tempXcoord, 1.0));
 	float height = tempX1val * fmod(tempZcoord, 1.0) + tempX2val * (1 - fmod(tempZcoord, 1.0));
 	pos.y = height + -1 * cameraDelta + 0.3;
-	fprintf(stderr, "%f %f %f %f \n", pos.y, height, tempXcoord, tempZcoord);
+	//fprintf(stderr, "%f %f %f %f \n", pos.y, height, tempXcoord, tempZcoord);
 	
 }
 void collisionAction(HitBox* obj1, HitBox* obj2, glm::ivec3 currentTile)
@@ -97,12 +97,12 @@ void collisionAction(HitBox* obj1, HitBox* obj2, glm::ivec3 currentTile)
 		if (obj1->hitboxType == 3)
 		{
 			calculateHeightRamps(obj1, currentTile, camera.minY);
-			fprintf(stderr, "Detected \n");
+			//fprintf(stderr, "Detected \n");
 		}
 		else if (obj2->hitboxType == 3)
 		{
 			calculateHeightRamps(obj2, currentTile, camera.minY);
-			fprintf(stderr, "Detected \n");
+			//fprintf(stderr, "Detected \n");
 		}
 	}
 	else if (obj1->hitboxType == 1 || obj2->hitboxType == 1)
